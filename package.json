@@ -1,0 +1,180 @@
+import React, { useState } from 'react';
+import { Calendar, Star, Book, User, Coffee, Moon, Sparkles, Heart, Quote, Send, MessageCircle } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+
+const SpiritualServicesApp = () => {
+  const [activeService, setActiveService] = useState(null);
+  const [showDailyInsights, setShowDailyInsights] = useState(false);
+  const [messages, setMessages] = useState([
+    { role: 'assistant', content: 'Hello! I\'m your spiritual guide. How can I help you today?' }
+  ]);
+  const [newMessage, setNewMessage] = useState('');
+
+  const services = [
+    {
+      id: 'tarot',
+      title: 'Tarot Reading',
+      icon: <Moon className="h-8 w-8" />,
+      color: 'from-purple-500 to-pink-500',
+      description: 'Discover insights through ancient tarot wisdom'
+    },
+    {
+      id: 'life-coaching',
+      title: 'Life Coaching',
+      icon: <Star className="h-8 w-8" />,
+      color: 'from-blue-500 to-cyan-500',
+      description: 'Transform your life with professional guidance'
+    },
+    {
+      id: 'psychic',
+      title: 'Psychic Reading',
+      icon: <Sparkles className="h-8 w-8" />,
+      color: 'from-orange-500 to-yellow-500',
+      description: 'Connect with spiritual insights and guidance'
+    },
+    {
+      id: 'spiritual',
+      title: 'Spiritual Coaching',
+      icon: <Heart className="h-8 w-8" />,
+      color: 'from-green-500 to-emerald-500',
+      description: 'Deepen your spiritual journey and awareness'
+    }
+  ];
+
+  const handleSendMessage = () => {
+    if (newMessage.trim()) {
+      setMessages([
+        ...messages, 
+        { role: 'user', content: newMessage },
+        { role: 'assistant', content: 'I understand your spiritual journey is unique. Let me help guide you through this question...' }
+      ]);
+      setNewMessage('');
+    }
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-orange-900">
+      {/* Header */}
+      <header className="p-4 bg-black/30 backdrop-blur-md">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-white">Orion Windsor</h1>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setShowDailyInsights(!showDailyInsights)}
+              className="flex items-center text-white bg-white/20 px-4 py-2 rounded-lg hover:bg-white/30 transition-colors"
+            >
+              <Star className="mr-2 h-4 w-4" /> Daily Insights
+            </button>
+            <User className="text-white" />
+          </div>
+        </div>
+      </header>
+
+      {/* Main Grid Layout */}
+      <main className="flex-1 p-4">
+        <div className="max-w-6xl mx-auto grid grid-cols-3 gap-4">
+          {/* Left Column - Services */}
+          <div className="col-span-2 grid grid-cols-2 gap-4 auto-rows-min">
+            {/* Daily Card Preview */}
+            <div className="col-span-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-xl p-4 text-white">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-semibold">Today's Card: The Star</h3>
+                  <p className="text-sm opacity-80">Hope and inspiration guide your path</p>
+                </div>
+                <div className="text-4xl">✨</div>
+              </div>
+            </div>
+
+            {/* Service Grid */}
+            {services.map((service) => (
+              <button
+                key={service.id}
+                onClick={() => setActiveService(service)}
+                className="h-40 relative overflow-hidden rounded-2xl group"
+                aria-label={service.title}
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-90 group-hover:opacity-100 transition-opacity`} />
+                <div className="relative h-full flex flex-col items-center justify-center p-4 text-white">
+                  <div className="mb-2 transform group-hover:scale-110 transition-transform">
+                    {service.icon}
+                  </div>
+                  <h2 className="text-lg font-bold text-center mb-2">{service.title}</h2>
+                  <p className="text-xs text-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    {service.description}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Right Column - Chat */}
+          <div className="bg-black/30 backdrop-blur-md rounded-xl flex flex-col h-[calc(100vh-8rem)]">
+            <div className="p-4 border-b border-white/10">
+              <h2 className="text-lg font-semibold text-white flex items-center">
+                <MessageCircle className="mr-2 h-5 w-5" /> Spiritual Guide
+              </h2>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-lg p-3 ${
+                      message.role === 'user'
+                        ? 'bg-blue-500'
+                        : 'bg-purple-500'
+                    }`}
+                  >
+                    <p className="text-white">{message.content}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="p-4 border-t border-white/10">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                  placeholder="Ask for spiritual guidance..."
+                  className="flex-1 bg-white/10 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  onClick={handleSendMessage}
+                  className="bg-blue-500 hover:bg-blue-600 rounded-lg px-4 py-2 flex items-center text-white"
+                >
+                  <Send className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Active Service Modal */}
+      {activeService && (
+        <div className="absolute top-0 left-0 w-full h-full bg-black/70 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 shadow-lg text-black max-w-md">
+            <h2 className="text-2xl font-bold mb-4">{activeService.title}</h2>
+            <p className="mb-4">{activeService.description}</p>
+            <button
+              onClick={() => setActiveService(null)}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SpiritualServicesApp;
+
